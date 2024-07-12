@@ -12,8 +12,6 @@ class MailerService
     public function sendWelcomeMail(User $user)
     {
         $mailer = new MailerSendService('Welcome to our platform! ' . $user->name);
-
-
         Mail::to($user->email)
             ->send($mailer);
     }
