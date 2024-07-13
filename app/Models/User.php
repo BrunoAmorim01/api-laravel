@@ -2,16 +2,17 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use PHPOpenSourceSaver\JWTAuth\Contracts\JWTSubject;
+use Laravel\Sanctum\HasApiTokens;
+use Laravel\Sanctum\NewAccessToken;
+use Illuminate\Support\Str;
 
-class User extends Authenticatable implements JWTSubject
+class User extends Authenticatable
 {
-    use HasFactory, Notifiable, HasUuids;
+    use HasApiTokens, HasFactory, Notifiable, HasUuids;
 
     protected $keyType = 'string';
     public $incrementing = false;
@@ -50,6 +51,7 @@ class User extends Authenticatable implements JWTSubject
         return [
             'password' => 'hashed',
             'email_verified_at' => 'datetime',
+            'id' => 'string',
         ];
     }
 
@@ -59,24 +61,20 @@ class User extends Authenticatable implements JWTSubject
     }
 
     /**
-     * Get the identifier that will be stored in the subject claim of the JWT.
+     * Create a new personal access token for the user.
      *
-     * @return mixed
+     * @param  string  $name
+     * @param  array  $abilities
+     * @return \Laravel\Sanctum\NewAccessToken
      */
-    public function getJWTIdentifier()
+    public function createToken(string $name, array $abilities = ['*'])
     {
-        return $this->getKey();
+        $token = $this->tokens()->create([
+            'name' => $name,
+            'token' => hash('sha256', $plainTextToken = Str::random(240)),
+            'abilities' => $abilities,
+        ]);
+
+        return new NewAccessToken($token, $plainTextToken);
     }
-
-    /**
-     * Return a key value array, containing any custom claims to be added to the JWT.
-     *
-     * @return array
-     */
-    public function getJWTCustomClaims()
-    {
-        return [];
-    }
-
-
 }
