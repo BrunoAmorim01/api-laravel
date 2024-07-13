@@ -3,7 +3,9 @@
 namespace App\Services;
 
 use App\Repositories\UserRepository;
+use App\Services\external\AuthService;
 use App\Services\external\MailerService;
+use Illuminate\Support\Facades\Hash;
 use Auth;
 use Illuminate\Auth\Authenticatable;
 
@@ -13,10 +15,10 @@ class UserService
 {
     public function __construct(
         private UserRepository $userRepository,
-        private MailerService $mailer
-        )
-    {
-        // Constructor logic here
+        private MailerService $mailer,
+        private AuthService $authService
+    ) {
+
     }
 
     public function create($data)
@@ -28,19 +30,8 @@ class UserService
             'email' => $data["email"],
             'password' => $password,
         ]);
-        Auth::setUser($user);
-        $credentials = request(['email', 'password']);
 
-        if (!$token = auth()->attempt($credentials)) {
-            return null;
-        }
-
-        try {
-            $this->mailer->sendWelcomeMail($user);
-
-        } catch (\Throwable $th) {
-            echo $th->getMessage();
-        }
+        $token = $this->authService->generateToken($user);
 
         return [
             'id' => $user->id,
