@@ -5,7 +5,8 @@ namespace App\Http\Controllers;
 use App\Http\Requests\CreateUserRequest;
 use App\Services\UserService;
 use App\Http\Controllers\Controller;
-use Auth;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
 
 class UsersController extends Controller
 {
@@ -22,17 +23,19 @@ class UsersController extends Controller
         );
     }
 
-    public function login()
+    public function login(Request $request)
     {
+
         $credentials = request(['email', 'password']);
 
-        if (!$token = auth()->attempt($credentials)) {
+        if (!Auth::attempt($credentials)) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 
-        return $this->respondWithToken($token);
+        Auth::login($request->user());
+        $tokenGenerated = $request->user()->createToken('access_token');
 
-
+        return $this->respondWithToken($tokenGenerated);
     }
 
     public function me()
@@ -40,19 +43,11 @@ class UsersController extends Controller
         return response()->json(auth()->user());
     }
 
-    /**
-     * Get the token array structure.
-     *
-     * @param  string $token
-     *
-     * @return \Illuminate\Http\JsonResponse
-     */
     protected function respondWithToken($token)
     {
         return response()->json([
-            'access_token' => $token,
+            'access_token' => $token->plainTextToken,
             'token_type' => 'bearer',
-            'expires_in' => auth()->factory()->getTTL() * 60
         ]);
     }
 
