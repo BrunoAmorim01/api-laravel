@@ -26,7 +26,7 @@ class CreateProducMovimentationRequest extends BaseRequest
             'quantity' => 'required|numeric',
             'type' => 'required|in:in,out',
             'reason' => 'required|in:sell,buy,adjustment,transfer',
-            'proof' => 'required|file|mimes:pdf,jpg,jpeg,png|max:2048',
+            'proof' => 'file|mimes:pdf,jpg,jpeg,png|max:2048',
         ];
     }
 }
