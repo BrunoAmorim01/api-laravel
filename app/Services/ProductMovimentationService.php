@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Jobs\ProcessProductMovimentation;
 use App\Repositories\ProductMovementData;
 use App\Repositories\ProductMovimentationDataResponse;
 use App\Repositories\ProductMovimentationRepository;
@@ -55,6 +56,8 @@ class ProductMovimentationService
         $productMovimentationToCreate->proof = $fileResponse;
 
         $productMovement = $this->productMovimentationRepository->create($productMovimentationToCreate);
+
+        ProcessProductMovimentation::dispatch(json_encode($productMovement))->afterResponse();
 
         return $productMovement;
 
