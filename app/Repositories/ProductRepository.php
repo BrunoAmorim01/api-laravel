@@ -5,11 +5,7 @@ namespace App\Repositories;
 use App\Models\Product;
 
 
-interface ProductInterface
-{
-    public function getId(): string;
-    public function getName(): string;
-}
+
 
 class ProductRepository
 {
@@ -17,5 +13,10 @@ class ProductRepository
     {
         $product = Product::create($data);
         return $product->only(['id', 'name']);
+    }
+
+    public function increments(string $id, int $value)
+    {
+        Product::where('id', $id)->increment('stock', $value);
     }
 }
