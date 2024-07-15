@@ -19,4 +19,14 @@ class ProductRepository
     {
         Product::where('id', $id)->increment('stock', $value);
     }
+
+    public function decrements(string $id, int $value)
+    {
+        Product::where('id', $id)->decrement('stock', $value);
+    }
+
+    public function find(string $id)
+    {
+        return Product::find($id, ['id', 'name', 'stock']);
+    }
 }
