@@ -4,7 +4,6 @@ namespace App\Repositories;
 
 use App\Models\ProductMovimentation;
 
-
 class ProductMovementData
 {
     public string $productId;
@@ -12,7 +11,7 @@ class ProductMovementData
     public int $quantity;
     public string $type;
     public string $reason;
-    public $proof;
+    public string $proof;
 
 }
 
