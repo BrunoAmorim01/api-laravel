@@ -15,12 +15,11 @@ class ProductsController extends Controller
 
     public function create(CreateProducRequest $request)
     {
-        //$data = $request->only(["name", "sku", "price", "stock"]);
         $data = $request->validated();
         $data['user_id'] = auth()->id();
 
         $response = $this->productService->create($data);
 
-        return response()->json($response);
+        return response()->json($response, 201);
     }
 }

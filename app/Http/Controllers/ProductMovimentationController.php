@@ -25,6 +25,6 @@ class ProductMovimentationController extends Controller
         $dataObj->proof = $data['proof'];
 
         $productMovimentation = $this->productMovimentationService->create($dataObj);
-        return response()->json($productMovimentation);
+        return response()->json($productMovimentation, 201);
     }
 }
