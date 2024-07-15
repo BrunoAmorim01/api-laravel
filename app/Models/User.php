@@ -73,6 +73,8 @@ class User extends Authenticatable
             'name' => $name,
             'token' => hash('sha256', $plainTextToken = Str::random(240)),
             'abilities' => $abilities,
+            'expires_at' => now()->addWeek(),
+
         ]);
 
         return new NewAccessToken($token, $plainTextToken);
