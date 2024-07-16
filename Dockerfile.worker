@@ -9,4 +9,6 @@ ADD . /app
 WORKDIR /app
 RUN composer install
 RUN cp ./.docker/web/my-supervisor.conf /etc/supervisor/conf.d/supervisord.conf
+RUN adduser -D apiuser
+USER apiuser
 CMD ["/usr/bin/supervisord"]
