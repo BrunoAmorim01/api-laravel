@@ -57,7 +57,7 @@ class ProductMovimentationService
 
         $productMovement = $this->productMovimentationRepository->create($productMovimentationToCreate);
 
-        ProcessProductMovimentation::dispatch(json_encode($productMovement))->afterResponse();
+        ProcessProductMovimentation::dispatch(json_encode($productMovement));
 
         return $productMovement;
 
