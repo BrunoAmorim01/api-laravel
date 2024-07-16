@@ -20,6 +20,14 @@ class ProductMovimentationDataResponse
     public string $id;
 }
 
+class ProductMovimentationFindResponse
+{
+    public string $id;
+    public string $type;
+    public string $productId;
+    public int $quantity;
+}
+
 class ProductMovimentationRepository
 {
     public function create(ProductMovementData $data): ProductMovimentationDataResponse
@@ -38,6 +46,19 @@ class ProductMovimentationRepository
 
         $response = new ProductMovimentationDataResponse();
         $response->id = $productMovimentationCreated['id'];
+
+        return $response;
+    }
+
+    public function find(string $id): ProductMovimentationFindResponse
+    {
+        $productMovimentation = ProductMovimentation::find($id, ['id', 'type', 'product_id', 'quantity']);
+
+        $response = new ProductMovimentationFindResponse();
+        $response->id = $productMovimentation->id;
+        $response->type = $productMovimentation->type;
+        $response->productId = $productMovimentation->product_id;
+        $response->quantity = $productMovimentation->quantity;
 
         return $response;
     }
