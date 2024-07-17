@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ProductMovimentationController;
+use App\Http\Controllers\ToolsController;
 use App\Http\Controllers\UsersController;
 use App\Http\Controllers\ProductsController;
 use Illuminate\Support\Facades\Route;
@@ -26,5 +27,11 @@ Route::prefix('product-movimentation')
     ->middleware('auth:sanctum')
     ->group(function () {
         Route::post('/', [ProductMovimentationController::class, "create"])->name('product-movimentation.create');
+    });
+
+Route::prefix('tools')
+    ->middleware('auth:sanctum')
+    ->group(function () {
+        Route::get('/cep/{zipcode}', [ToolsController::class, "getCep"])->name('tools.cep');
     });
 
