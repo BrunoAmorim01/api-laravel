@@ -31,6 +31,7 @@ Route::prefix('product-movimentation')
     ->middleware('auth:sanctum')
     ->group(function () {
         Route::post('/', [ProductMovimentationController::class, "create"])->name('product-movimentation.create');
+        Route::get('/', [ProductMovimentationController::class, "index"])->name('product-movimentation.index');
     });
 
 Route::prefix('tools')
