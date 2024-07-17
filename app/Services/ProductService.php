@@ -41,8 +41,17 @@ class ProductService
         }
 
         return $products;
+    }
 
+    public function find(string $id)
+    {
+        $product = $this->productRepository->find($id);
 
+        if (is_object($product)) {
+            $product->price /= 100;
+        }
+
+        return $product;
     }
 
 }
