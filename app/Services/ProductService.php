@@ -21,13 +21,28 @@ class ProductService
             'sku' => $data["sku"],
             'price' => $data["price"],
             'stock' => $data["stock"],
-            'user_id'=> Auth::id()
+            'user_id' => Auth::id()
         ]);
 
         return [
             'id' => $product['id'],
             'name' => $product['name'],
         ];
+    }
+
+    public function index(int $perPage, int $page)
+    {
+        $products = $this->productRepository->index($perPage, $page);
+
+        foreach ($products['data'] as $product) {
+            if (is_object($product)) {
+                $product->price /= 100;
+            }
+        }
+
+        return $products;
+
+
     }
 
 }
