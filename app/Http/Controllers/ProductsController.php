@@ -22,4 +22,14 @@ class ProductsController extends Controller
 
         return response()->json($response, 201);
     }
+
+    public function index(Request $request)
+    {
+        $perPage = $request->query('perPage', 10);
+        $page = $request->query('page', 1);
+
+        $response = $this->productService->index((int) $perPage, (int) $page);
+
+        return response()->json($response);
+    }
 }
