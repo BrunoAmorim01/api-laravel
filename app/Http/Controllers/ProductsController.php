@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\CreateProducRequest;
 use App\Services\ProductService;
 use Illuminate\Http\Request;
+use Validator;
 
 class ProductsController extends Controller
 {
@@ -29,6 +30,22 @@ class ProductsController extends Controller
         $page = $request->query('page', 1);
 
         $response = $this->productService->index((int) $perPage, (int) $page);
+
+        return response()->json($response);
+    }
+
+    public function show(string $id)
+    {
+        $rules = [
+            'id' => 'required|uuid|exists:products,id'
+        ];
+
+        Validator::validate([
+            'id' => $id,
+        ], $rules);
+
+
+        $response = $this->productService->find($id);
 
         return response()->json($response);
     }
