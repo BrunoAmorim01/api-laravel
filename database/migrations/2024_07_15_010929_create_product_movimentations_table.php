@@ -12,8 +12,8 @@ return new class extends Migration {
     {
         Schema::create('product_movimentations', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->uuid('user_id')->references('id')->on('users')->cascadeOnDelete()->cascadeOnUpdate();
-            $table->uuid('product_id')->references('id')->on('products')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreignUuid('user_id')->constrained()->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreignUuid('product_id')->constrained()->cascadeOnDelete()->cascadeOnUpdate();
             $table->integer('quantity');
             $table->enum('type', ['in', 'out']);
             $table->enum('reason', ['sell', 'buy', 'adjustment', 'transfer']);
