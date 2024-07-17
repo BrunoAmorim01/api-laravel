@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Models\ProductMovimentation;
+use Log;
 
 class ProductMovementData
 {
@@ -26,6 +27,18 @@ class ProductMovimentationFindResponse
     public string $type;
     public string $productId;
     public int $quantity;
+}
+
+class ProductMovimentationIndexRequest
+{
+    public string|null $productId;
+    public string|null $userId;
+    public string|null $type;
+    public string|null $reason;
+    public string|null $dateFrom;
+    public string|null $dateTo;
+    public int $page;
+    public int $perPage;
 }
 
 class ProductMovimentationRepository
@@ -61,5 +74,42 @@ class ProductMovimentationRepository
         $response->quantity = $productMovimentation->quantity;
 
         return $response;
+    }
+
+    public function index(ProductMovimentationIndexRequest $filters)
+    {
+        $productMovimentations = ProductMovimentation
+            ::with(['product:id,name', 'user:id,name'])
+            ->select(['id','user_id','product_id', 'type', 'quantity', 'reason', 'proof', 'created_at']);
+
+        if ($filters->productId) {
+            $productMovimentations->where('product_id', $filters->productId);
+        }
+
+        if ($filters->userId) {
+            $productMovimentations->where('user_id', $filters->userId);
+        }
+
+        if ($filters->type) {
+            $productMovimentations->where('type', $filters->type);
+        }
+
+        if ($filters->reason) {
+            $productMovimentations->where('reason', $filters->reason);
+        }
+
+        if ($filters->dateFrom) {
+            $productMovimentations->where('created_at', '>=', date('Y-m-d 00:00:00', strtotime($filters->dateFrom)));
+        }
+
+        if ($filters->dateTo) {
+            $productMovimentations->where('created_at', '<=', date('Y-m-d 23:59:59', strtotime($filters->dateTo)));
+        }
+
+        $productMovimentations = $productMovimentations->paginate($filters->perPage, ['*'], 'page', $filters->page);
+
+        Log::info('productMovimentations', ['productMovimentations' => $productMovimentations->items()]);
+
+        return $productMovimentations;
     }
 }
