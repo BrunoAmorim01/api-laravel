@@ -13,6 +13,16 @@ class ProductIndexResponse
     public string $sku;
 }
 
+class ProductUpdate
+{
+    public string $id;
+    public string $name;
+    public string $sku;
+    public int $price;
+}
+
+
+
 
 class ProductRepository
 {
@@ -67,5 +77,29 @@ class ProductRepository
                 'lastPage' => $products->lastPage(),
             ],
         ];
+    }
+
+    public function update(ProductUpdate $data)
+    {
+        $toUpdate = [];
+
+        if ($data->name) {
+            $toUpdate['name'] = $data->name;
+        }
+
+        if ($data->sku) {
+            $toUpdate['sku'] = $data->sku;
+        }
+
+        if ($data->price) {
+            $toUpdate['price'] = $data->price;
+        }
+
+        if ($data->sku) {
+            $toUpdate['sku'] = $data->sku;
+        }
+
+
+        Product::where('id', $data->id)->update($toUpdate);
     }
 }
