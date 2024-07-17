@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateProducMovimentationRequest;
+use App\Http\Requests\ListProductMovimentationsRequest;
+use App\Repositories\ProductMovimentationIndexRequest;
 use App\Services\CreateProductMovementData;
 use App\Services\ProductMovimentationService;
 use Auth;
@@ -26,5 +28,26 @@ class ProductMovimentationController extends Controller
 
         $productMovimentation = $this->productMovimentationService->create($dataObj);
         return response()->json($productMovimentation, 201);
+    }
+
+    public function index(ListProductMovimentationsRequest $request)
+    {
+        $dataValidated = $request->validated();
+
+        $data = new ProductMovimentationIndexRequest();
+        $data->productId = $dataValidated['productId'] ?? null;
+        $data->userId = $dataValidated['userId'] ?? null;
+        $data->type = $dataValidated['type'] ?? null;
+        $data->reason = $dataValidated['reason'] ?? null;
+        $data->page = $dataValidated['page'] ?? 1;
+        $data->perPage = $dataValidated['limit'] ?? 10;
+        $data->dateFrom = $dataValidated['dateFrom'] ?? null;
+        $data->dateTo = $dataValidated['dateTo'] ?? null;
+
+
+        $productMovimentations = $this->productMovimentationService->index(
+            $data
+        );
+        return response()->json($productMovimentations);
     }
 }
