@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Repositories\ProductRepository;
+use App\Repositories\ProductUpdate;
 use Illuminate\Support\Facades\Auth;
 
 class ProductService
@@ -52,6 +53,19 @@ class ProductService
         }
 
         return $product;
+    }
+
+    public function update($id, $data)
+    {
+
+        $product = new ProductUpdate();
+        $product->id = $id;
+        $product->name = $data['name'];
+        $product->sku = $data['sku'];
+        $product->price = $data['price'];
+
+
+        $this->productRepository->update($product);
     }
 
 }
