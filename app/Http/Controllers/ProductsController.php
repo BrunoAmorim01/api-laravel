@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateProducRequest;
+use App\Http\Requests\UpdateProductRequest;
 use App\Services\ProductService;
 use Illuminate\Http\Request;
 use Validator;
@@ -48,5 +49,18 @@ class ProductsController extends Controller
         $response = $this->productService->find($id);
 
         return response()->json($response);
+    }
+
+    public function update(string $id, UpdateProductRequest $request)
+    {
+        $data = [
+            'name' => $request->name,
+            'sku' => $request->sku,
+            'price' => $request->price,
+        ];
+
+        $this->productService->update($id, $data);
+
+        return response(null, 204);
     }
 }

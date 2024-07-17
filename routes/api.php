@@ -23,8 +23,8 @@ Route::prefix('products')
         Route::post('/', [ProductsController::class, "create"])->name('products.create');
         Route::get('/', [ProductsController::class, "index"])->name('products.index');
         Route::get('/{id}', [ProductsController::class, "show"])
-            //->where('id', '[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}')
             ->name('products.show');
+        Route::put('/{id}', [ProductsController::class, "update"])->name('products.update');
     });
 
 Route::prefix('product-movimentation')
