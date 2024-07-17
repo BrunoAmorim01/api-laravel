@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Jobs\ProcessProductMovimentation;
 use App\Repositories\ProductMovementData;
 use App\Repositories\ProductMovimentationDataResponse;
+use App\Repositories\ProductMovimentationIndexRequest;
 use App\Repositories\ProductMovimentationRepository;
 use App\Repositories\ProductRepository;
 use Illuminate\Http\UploadedFile;
@@ -22,7 +23,6 @@ class CreateProductMovementData
     public UploadedFile $proof;
 
 };
-
 
 class ProductMovimentationService
 {
@@ -63,4 +63,44 @@ class ProductMovimentationService
 
     }
 
+    public function index(
+        ProductMovimentationIndexRequest $data
+    ): array {
+
+        $responseIndex = $this->productMovimentationRepository->index($data);
+        $items = $responseIndex->items();
+        $dataCollection = collect($items);
+
+        $dataMappet = $dataCollection->map(function ($item) {
+            return [
+                'id' => $item->id,
+                'type' => $item->type,
+                'quantity' => $item->quantity,
+                'reason' => $item->reason,
+                'proof' => $item->proof,
+                'createdAt' => $item->created_at,
+                'product' => [
+                    'id' => $item->product->id,
+                    'name' => $item->product->name,
+                ],
+                'user' => [
+                    'id' => $item->user->id,
+                    'name' => $item->user->name,
+                ],
+            ];
+
+        });
+
+        $response = [
+            'data' => $dataMappet,
+            'pagination' => [
+                'total' => $responseIndex->total(),
+                'perPage' => $responseIndex->perPage(),
+                'currentPage' => $responseIndex->currentPage(),
+                'lastPage' => $responseIndex->lastPage(),
+            ],
+        ];
+
+        return $response;
+    }
 }
