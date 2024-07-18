@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Exports\ProductMovimentationExport;
 use App\Jobs\ProcessProductMovimentation;
 use App\Repositories\ProductMovementData;
 use App\Repositories\ProductMovimentationDataResponse;
@@ -22,7 +23,8 @@ class CreateProductMovementData
     public string $reason;
     public UploadedFile $proof;
 
-};
+}
+;
 
 class ProductMovimentationService
 {
@@ -102,5 +104,13 @@ class ProductMovimentationService
         ];
 
         return $response;
+    }
+
+    public function export(
+        ProductMovimentationIndexRequest $data
+    ) {
+        $responseIndex = $this->productMovimentationRepository->index($data);
+        return new ProductMovimentationExport($responseIndex);
+
     }
 }
