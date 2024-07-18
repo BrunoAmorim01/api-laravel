@@ -37,8 +37,8 @@ class ProductMovimentationIndexRequest
     public string|null $reason;
     public string|null $dateFrom;
     public string|null $dateTo;
-    public int $page;
-    public int $perPage;
+    public int|null $page;
+    public int|null $perPage;
 }
 
 class ProductMovimentationRepository
@@ -80,7 +80,7 @@ class ProductMovimentationRepository
     {
         $productMovimentations = ProductMovimentation
             ::with(['product:id,name', 'user:id,name'])
-            ->select(['id','user_id','product_id', 'type', 'quantity', 'reason', 'proof', 'created_at']);
+            ->select(['id', 'user_id', 'product_id', 'type', 'quantity', 'reason', 'proof', 'created_at']);
 
         if ($filters->productId) {
             $productMovimentations->where('product_id', $filters->productId);
@@ -106,9 +106,12 @@ class ProductMovimentationRepository
             $productMovimentations->where('created_at', '<=', date('Y-m-d 23:59:59', strtotime($filters->dateTo)));
         }
 
-        $productMovimentations = $productMovimentations->paginate($filters->perPage, ['*'], 'page', $filters->page);
+        if (isset($filters->perPage, $filters->page)) {
+            Log::info('Paginate');
+            return $productMovimentations->paginate($filters->perPage, ['*'], 'page', $filters->page);
+        }
 
-        Log::info('productMovimentations', ['productMovimentations' => $productMovimentations->items()]);
+        $productMovimentations = $productMovimentations->get();
 
         return $productMovimentations;
     }
