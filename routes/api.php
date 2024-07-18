@@ -8,13 +8,13 @@ use Illuminate\Support\Facades\Route;
 
 Route::group([
     'middleware' => 'api',
-    'prefix' => 'auth'
+    'prefix' => 'auth/users'
 ], function ($router) {
-    Route::post('/register', [UsersController::class, "createUser"])->name('register');
-    Route::post('/login', [UsersController::class, 'login'])->name('login');
+    Route::post('/register', [UsersController::class, "createUser"])->name('user.register');
+    Route::post('/login', [UsersController::class, 'login'])->name('user.login');
     Route::get('/me', [UsersController::class, 'me'])
         ->middleware('auth:sanctum')
-        ->name('me');
+        ->name('user.me');
 });
 
 Route::prefix('products')
@@ -40,4 +40,3 @@ Route::prefix('tools')
     ->group(function () {
         Route::get('/cep/{zipcode}', [ToolsController::class, "getCep"])->name('tools.cep');
     });
-
