@@ -3,11 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateProducMovimentationRequest;
+use App\Http\Requests\ListProductMovimentationsExportRequest;
 use App\Http\Requests\ListProductMovimentationsRequest;
 use App\Repositories\ProductMovimentationIndexRequest;
 use App\Services\CreateProductMovementData;
 use App\Services\ProductMovimentationService;
 use Auth;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ProductMovimentationController extends Controller
 {
@@ -50,4 +52,22 @@ class ProductMovimentationController extends Controller
         );
         return response()->json($productMovimentations);
     }
+
+    public function export(ListProductMovimentationsExportRequest $request)
+    {
+        $dataValidated = $request->validated();
+
+        $data = new ProductMovimentationIndexRequest();
+        $data->productId = $dataValidated['productId'] ?? null;
+        $data->userId = $dataValidated['userId'] ?? null;
+        $data->type = $dataValidated['type'] ?? null;
+        $data->reason = $dataValidated['reason'] ?? null;
+        $data->dateFrom = $dataValidated['dateFrom'] ?? null;
+        $data->dateTo = $dataValidated['dateTo'] ?? null;
+
+        $response = $this->productMovimentationService->export($data);
+        return Excel::download($response, 'movimentations.xlsx');
+    }
+
+
 }

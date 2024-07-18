@@ -32,6 +32,7 @@ Route::prefix('product-movimentation')
     ->group(function () {
         Route::post('/', [ProductMovimentationController::class, "create"])->name('product-movimentation.create');
         Route::get('/', [ProductMovimentationController::class, "index"])->name('product-movimentation.index');
+        Route::get('/export', [ProductMovimentationController::class, "export"])->name('product-movimentation.export');
     });
 
 Route::prefix('tools')
