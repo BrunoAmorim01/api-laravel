@@ -46,7 +46,7 @@ class HomeController extends Controller
             'user_id' => auth()->id(),
             'text' => $request->get('text'),
         ]);
-        SendMessage::dispatch($message);
+        SendMessage::dispatch($message)->onConnection('database')->onQueue('chat-messages');
 
         return response()->json([
             'success' => true,

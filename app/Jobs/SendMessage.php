@@ -32,7 +32,6 @@ class SendMessage implements ShouldQueue
             'user_id' => $this->message->user_id,
             'text' => $this->message->text,
             'time' => $this->message->time,
-        ])->onConnection('database')
-            ->onQueue('chat-messages');
+        ]);
     }
 }
