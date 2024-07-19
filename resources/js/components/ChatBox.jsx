@@ -3,8 +3,7 @@ import Message from "./Message.jsx";
 import MessageInput from "./MessageInput.jsx";
 
 const ChatBox = ({ rootUrl }) => {
-    const userData = document.getElementById('main')
-        .getAttribute('data-user');
+    const userData = document.getElementById("main").getAttribute("data-user");
 
     const user = JSON.parse(userData);
     // `App.Models.User.${user.id}`;
@@ -18,12 +17,14 @@ const ChatBox = ({ rootUrl }) => {
     };
 
     const connectWebSocket = () => {
-        window.Echo.private(webSocketChannel)
-            .listen('GotMessage', async (e) => {
-                // e.message
+        window.Echo.private(webSocketChannel).listen(
+            "GotMessage",
+            async (e) => {
+                console.log(e);
                 await getMessages();
-            });
-    }
+            }
+        );
+    };
 
     const getMessages = async () => {
         try {
@@ -41,7 +42,7 @@ const ChatBox = ({ rootUrl }) => {
 
         return () => {
             window.Echo.leave(webSocketChannel);
-        }
+        };
     }, []);
 
     return (
@@ -49,16 +50,17 @@ const ChatBox = ({ rootUrl }) => {
             <div className="col-md-8">
                 <div className="card">
                     <div className="card-header">Chat Box</div>
-                    <div className="card-body"
-                         style={{height: "500px", overflowY: "auto"}}>
-                        {
-                            messages?.map((message) => (
-                                <Message key={message.id}
-                                         userId={user.id}
-                                         message={message}
-                                />
-                            ))
-                        }
+                    <div
+                        className="card-body"
+                        style={{ height: "500px", overflowY: "auto" }}
+                    >
+                        {messages?.map((message) => (
+                            <Message
+                                key={message.id}
+                                userId={user.id}
+                                message={message}
+                            />
+                        ))}
                         <span ref={scroll}></span>
                     </div>
                     <div className="card-footer">
