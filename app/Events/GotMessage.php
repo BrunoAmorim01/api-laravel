@@ -7,6 +7,7 @@ use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
+use Log;
 
 class GotMessage implements ShouldBroadcast
 {
@@ -17,7 +18,8 @@ class GotMessage implements ShouldBroadcast
      */
     public function __construct(public array $message)
     {
-        //
+        Log::info('Message created manerao');
+        Log::info(json_encode($message));
     }
 
     /**
@@ -29,26 +31,23 @@ class GotMessage implements ShouldBroadcast
 
     public function broadcastOn(): array
     {
+        Log::info('Broadcasting message');
         return [
             new PrivateChannel('channel_for_everyone'),
         ];
     }
-    /*
+
+    /**
      * The name of the queue connection to use when broadcasting the event.
      *
      * @var string
      */
-    public $connection = 'reverb';
+    public $connection = 'sync';
 
     /**
      * The name of the queue on which to place the broadcasting job.
      *
      * @var string
      */
-    public $queue = 'chat-messages';
-
-    public function broadcastQueue(): string
-{
-    return 'chat-messages';
-}
+    public $queue = 'chat-broadcast';
 }
