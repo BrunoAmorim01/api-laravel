@@ -25,9 +25,12 @@ class HomeController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function index() {
+    public function index()
+    {
         $user = User::where('id', auth()->id())->select([
-            'id', 'name', 'email',
+            'id',
+            'name',
+            'email',
         ])->first();
 
         return view('home', [
@@ -35,18 +38,28 @@ class HomeController extends Controller
         ]);
     }
 
-    public function messages(): JsonResponse {
+    public function messages(): JsonResponse
+    {
         $messages = Message::with('user')->get()->append('time');
 
         return response()->json($messages);
     }
 
-    public function message(Request $request): JsonResponse {
-        $message = Message::create([
+    public function message(Request $request): JsonResponse
+    {
+        $messageCreated = Message::create([
             'user_id' => auth()->id(),
             'text' => $request->get('text'),
         ]);
-        SendMessage::dispatch($message)->onConnection('database')->onQueue('chat-messages');
+
+        $messageTosend = [
+            'id' => $messageCreated->id,
+            'user_id' => $messageCreated->user_id,
+            'text' => $messageCreated->text,
+            'time' => $messageCreated->time,
+        ];
+
+        SendMessage::dispatch(json_encode($messageTosend))->onConnection('sqs')->onQueue('chat');
 
         return response()->json([
             'success' => true,
