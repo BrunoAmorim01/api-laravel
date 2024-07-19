@@ -7,7 +7,7 @@ use App\Http\Controllers\ProductsController;
 use Illuminate\Support\Facades\Route;
 
 Route::group([
-    'middleware' => 'api',
+   // 'middleware' => 'api',
     'prefix' => 'auth/users'
 ], function ($router) {
     Route::post('/register', [UsersController::class, "createUser"])->name('user.register');
